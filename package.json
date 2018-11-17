@@ -27,7 +27,7 @@
     "hubot-slack": "^4.5.5"
   },
   "engines": {
-    "node": "0.10.x"
+    "node": "10.10.x"
   },
   "devDependencies": {
     "@babel/core": "^7.1.2",
