@@ -10,16 +10,17 @@ var _newsapi = _interopRequireDefault(require("newsapi"));
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 // Description:
-// 	Dette scriptet interagerer med newsapi for å gi oss de siste toppsakene i Norge
+//  Dette scriptet interagerer med newsapi for å gi oss de siste toppsakene i Norge
 //
 // Configuration:
-// 	Du må sette en gyldig NEWS_API_KEY gitt av newsapi.org for å kommunisere med newsapi sitt api.
-//
-// Commands:
-//    hubot nyheter - Returnerer toppsakene i Norge
+//  Du må sette en gyldig NEWS_API_KEY gitt av newsapi.org for å kommunisere med newsapi sitt api.
 require('dotenv').config();
 
 var newsapi = new _newsapi.default(process.env.NEWS_API_KEY);
+
+var henteNyheterFeilmelding = function henteNyheterFeilmelding() {
+  return 'Kunne ikke hente nyheter :cry:';
+};
 
 var nyheter = function nyheter(bot) {
   bot.respond(/nyheter/i, function (res) {
@@ -27,7 +28,6 @@ var nyheter = function nyheter(bot) {
       language: 'no',
       country: 'no'
     }).then(function (response) {
-      console.log(response);
       var status = response.status,
           totalResults = response.totalResults,
           articles = response.articles;
@@ -36,10 +36,12 @@ var nyheter = function nyheter(bot) {
         res.send("Hentet ".concat(totalResults, " av de siste toppsakene i Norge :newspaper:"));
         res.send(articles.map(function (article) {
           return "*".concat(article.title, "* - publisert ").concat(new Date(article.publishedAt).toString(), "\n").concat(article.content, "\nLes mer: ").concat(article.url);
-        }).join('\n\n“'));
+        }).join('\n\n'));
       } else {
-        res.send('Kunne ikke hente nyheter :cry:');
+        res.send(henteNyheterFeilmelding());
       }
+    }).catch(function () {
+      res.send(henteNyheterFeilmelding());
     });
   });
 };
