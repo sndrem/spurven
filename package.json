@@ -1,0 +1,44 @@
+{
+  "name": "spurven",
+  "version": "0.0.0",
+  "private": true,
+  "author": "Sindre Moldeklev <sindre.moldeklev@bekk.no>",
+  "description": "En vennlig bot for å hjelpe med hverdagslige sysler i hjemmet",
+  "scripts": {
+    "start": "bin/hubot",
+    "start:dev": "npm run clean && npm run build && bin/hubot",
+    "build": "npx babel src --out-dir ./dist",
+    "build:watch": "babel src --out-dir ./dist --watch",
+    "clean": "rm -rf ./dist && mkdir ./dist"
+  },
+  "dependencies": {
+    "hubot": "^3.1.1",
+    "hubot-diagnostics": "^1.0.0",
+    "hubot-google-images": "^0.2.7",
+    "hubot-google-translate": "^0.2.1",
+    "hubot-help": "^1.0.1",
+    "hubot-heroku-keepalive": "^1.0.3",
+    "hubot-maps": "0.0.3",
+    "hubot-pugme": "^0.1.1",
+    "hubot-redis-brain": "^1.0.0",
+    "hubot-rules": "^1.0.0",
+    "hubot-scripts": "^2.17.2",
+    "hubot-shipit": "^0.2.1",
+    "hubot-slack": "^4.5.5"
+  },
+  "engines": {
+    "node": "0.10.x"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.1.2",
+    "@babel/cli": "^7.1.2",
+    "@babel/node": "^7.0.0",
+    "@babel/preset-env": "^7.1.0",
+    "babel-loader": "^8.0.4",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-stage-0": "^6.24.1",
+    "eslint": "^5.7.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.14.0"
+  }
+}
