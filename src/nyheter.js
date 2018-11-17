@@ -1,3 +1,12 @@
+// Description:
+// 	Dette scriptet interagerer med newsapi for å gi oss de siste toppsakene i Norge
+//
+// Configuration:
+// 	Du må sette en gyldig NEWS_API_KEY gitt av newsapi.org for å kommunisere med newsapi sitt api.
+//
+// Commands:
+//    hubot nyheter - Returnerer toppsakene i Norge
+
 import NewsApi from 'newsapi';
 
 require('dotenv').config();
@@ -12,7 +21,6 @@ export const nyheter = (bot) => {
         country: 'no',
       })
       .then((response) => {
-        console.log(response);
         const { status, totalResults, articles } = response;
         if (status === 'ok') {
           res.send(
@@ -21,11 +29,11 @@ export const nyheter = (bot) => {
           res.send(
             articles
               .map(
-                article => `**${article.title}** publisert ${new Date(
+                article => `*${article.title}* - publisert ${new Date(
                     article.publishedAt,
                   ).toString()}\n${article.content}\nLes mer: ${article.url}`,
               )
-              .join('\n“'),
+              .join('\n\n“'),
           );
         } else {
           res.send('Kunne ikke hente nyheter :cry:');
