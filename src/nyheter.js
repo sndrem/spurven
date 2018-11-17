@@ -33,7 +33,7 @@ export const nyheter = (bot) => {
                     article.publishedAt,
                   ).toString()}\n${article.content}\nLes mer: ${article.url}`,
               )
-              .join('\n\n“'),
+              .join('\n\n'),
           );
         } else {
           res.send('Kunne ikke hente nyheter :cry:');
