@@ -1,4 +1,3 @@
-/* eslint-disable import/prefer-default-export */
 export const home = (bot) => {
   bot.hear(/(vann(e)?|plant(er)?)/i, (res) => {
     res.send(`Lurer du på hvordan du skal vanne plantene? :leaves:
