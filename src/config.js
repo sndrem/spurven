@@ -1,6 +1,6 @@
 const config = {
   slackrooms: {
-    samboerskapet: '#samboerskap',
+    informasjon: '#informasjon',
   },
 };
 

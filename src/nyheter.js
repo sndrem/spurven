@@ -23,23 +23,23 @@ export const nyheter = (bot) => {
   new CronJob('0 8 * * *', hentNyheter, null, true, tz); // Hver dag kl. 8.00
 
   const hentNyheter = (options = { language: 'no', country: 'no' }) => {
-    const { samboerskapet } = config.slackrooms;
+    const { informasjon } = config.slackrooms;
     newsapi.v2
       .topHeadlines(options)
       .then((response) => {
         const { status, totalResults, articles } = response;
         if (status === 'ok') {
           if (articles.length === 0) {
-            bot.messageRoom(samboerskapet, 'Fant ingen nyheter');
+            bot.messageRoom(informasjon, 'Fant ingen nyheter');
             return;
           }
 
           bot.messageRoom(
-            samboerskapet,
+            informasjon,
             `Hentet ${totalResults} av de siste toppsakene i Norge :newspaper:`,
           );
           bot.messageRoom(
-            samboerskapet,
+            informasjon,
             articles
               .map(
                 article => `*${article.title}* - publisert ${new Date(
@@ -51,11 +51,11 @@ export const nyheter = (bot) => {
               .join('\n\n'),
           );
         } else {
-          bot.messageRoom(samboerskapet, henteNyheterFeilmelding());
+          bot.messageRoom(informasjon, henteNyheterFeilmelding());
         }
       })
       .catch(() => {
-        bot.messageRoom(samboerskapet, henteNyheterFeilmelding());
+        bot.messageRoom(informasjon, henteNyheterFeilmelding());
       });
   };
 };

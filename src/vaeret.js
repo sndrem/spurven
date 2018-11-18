@@ -28,16 +28,16 @@ const konverterIkon = (icon) => {
 };
 
 export const vaeret = (bot) => {
-  const { samboerskapet } = config.slackrooms;
+  const { informasjon } = config.slackrooms;
   const hentVaerData = () => {
     yrno.getWeather(LOCATION).then((weather) => {
       weather.getFiveDaySummary().then((data) => {
         bot.messageRoom(
-          samboerskapet,
+          informasjon,
           'Her er værmeldingen for Oslo de neste dagene :sunrise_over_mountains:',
         );
         bot.messageRoom(
-          samboerskapet,
+          informasjon,
           data
             .map(
               w => `${new Date(w.from).toDateString()}\n${konverterIkon(
