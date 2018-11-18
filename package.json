@@ -6,7 +6,7 @@
   "description": "En vennlig bot for å hjelpe med hverdagslige sysler i hjemmet",
   "scripts": {
     "start": "bin/hubot",
-    "start:dev": "npm run clean && npm run build && bin/hubot",
+    "start:dev": "npm run clean && npm run build && npm start",
     "build": "npx babel src --out-dir ./dist",
     "build:watch": "babel src --out-dir ./dist --watch",
     "clean": "rm -rf ./dist && mkdir ./dist"
@@ -27,7 +27,8 @@
     "hubot-scripts": "^2.17.2",
     "hubot-shipit": "^0.2.1",
     "hubot-slack": "^4.5.5",
-    "newsapi": "^2.4.0"
+    "newsapi": "^2.4.0",
+    "yr.no-forecast": "^2.1.0"
   },
   "engines": {
     "node": "10.10.x"

@@ -31,7 +31,7 @@ var nyheter = function nyheter(bot) {
     hentNyheter();
   });
   var tz = 'Europe/Oslo';
-  new _cron.CronJob('* * * * *', hentNyheter, null, true, tz);
+  new _cron.CronJob('0 8 * * *', hentNyheter, null, true, tz); // Hver dag kl. 8.00
 
   var hentNyheter = function hentNyheter() {
     var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {
@@ -45,15 +45,14 @@ var nyheter = function nyheter(bot) {
           articles = response.articles;
 
       if (status === 'ok') {
-        bot.messageRoom(samboerskapet, "Hentet ".concat(totalResults, " av de siste toppsakene i Norge :newspaper:"));
-
         if (articles.length === 0) {
           bot.messageRoom(samboerskapet, 'Fant ingen nyheter');
           return;
         }
 
+        bot.messageRoom(samboerskapet, "Hentet ".concat(totalResults, " av de siste toppsakene i Norge :newspaper:"));
         bot.messageRoom(samboerskapet, articles.map(function (article) {
-          return "*".concat(article.title, "* - publisert ").concat(new Date(article.publishedAt).toString(), "\n").concat(article.content, "\nLes mer: ").concat(article.url);
+          return "*".concat(article.title, "* - publisert ").concat(new Date(article.publishedAt).toString(), "\n").concat(article.content !== null ? article.content : '', "\nLes mer: ").concat(article.url);
         }).join('\n\n'));
       } else {
         bot.messageRoom(samboerskapet, henteNyheterFeilmelding());
