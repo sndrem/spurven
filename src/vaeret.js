@@ -42,11 +42,13 @@ export const vaeret = (bot) => {
             .map(
               w => `${new Date(w.from).toDateString()}\n${konverterIkon(
                   w.icon,
-                )} - :thermometer: ${w.temperature.value} grader - ${
+                )} - :thermometer: ${
+                  w.temperature.value
+                } grader - :umbrella_with_rain_drops:  ${
                   w.rain
-                } regn :umbrella_with_raindrops:} - ${w.windSpeed.name} (${
+                } regn - :wind_blowing_face: ${w.windSpeed.name} (${
                   w.windSpeed.mps
-                } m/s) :wind_blowing_face:`,
+                } m/s) `,
             )
             .join('\n\n'),
         );
