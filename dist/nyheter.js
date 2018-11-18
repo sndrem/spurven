@@ -38,7 +38,7 @@ var nyheter = function nyheter(bot) {
       language: 'no',
       country: 'no'
     };
-    var samboerskapet = _config.default.slackrooms.samboerskapet;
+    var informasjon = _config.default.slackrooms.informasjon;
     newsapi.v2.topHeadlines(options).then(function (response) {
       var status = response.status,
           totalResults = response.totalResults,
@@ -46,19 +46,19 @@ var nyheter = function nyheter(bot) {
 
       if (status === 'ok') {
         if (articles.length === 0) {
-          bot.messageRoom(samboerskapet, 'Fant ingen nyheter');
+          bot.messageRoom(informasjon, 'Fant ingen nyheter');
           return;
         }
 
-        bot.messageRoom(samboerskapet, "Hentet ".concat(totalResults, " av de siste toppsakene i Norge :newspaper:"));
-        bot.messageRoom(samboerskapet, articles.map(function (article) {
+        bot.messageRoom(informasjon, "Hentet ".concat(totalResults, " av de siste toppsakene i Norge :newspaper:"));
+        bot.messageRoom(informasjon, articles.map(function (article) {
           return "*".concat(article.title, "* - publisert ").concat(new Date(article.publishedAt).toString(), "\n").concat(article.content !== null ? article.content : '', "\nLes mer: ").concat(article.url);
         }).join('\n\n'));
       } else {
-        bot.messageRoom(samboerskapet, henteNyheterFeilmelding());
+        bot.messageRoom(informasjon, henteNyheterFeilmelding());
       }
     }).catch(function () {
-      bot.messageRoom(samboerskapet, henteNyheterFeilmelding());
+      bot.messageRoom(informasjon, henteNyheterFeilmelding());
     });
   };
 };

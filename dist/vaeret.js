@@ -41,14 +41,14 @@ var konverterIkon = function konverterIkon(icon) {
 };
 
 var vaeret = function vaeret(bot) {
-  var samboerskapet = _config.default.slackrooms.samboerskapet;
+  var informasjon = _config.default.slackrooms.informasjon;
 
   var hentVaerData = function hentVaerData() {
     yrno.getWeather(LOCATION).then(function (weather) {
       weather.getFiveDaySummary().then(function (data) {
-        bot.messageRoom(samboerskapet, 'Her er værmeldingen for Oslo de neste dagene :sunrise_over_mountains:');
-        bot.messageRoom(samboerskapet, data.map(function (w) {
-          return "".concat(new Date(w.from).toDateString(), "\n").concat(konverterIkon(w.icon), " - :thermometer: ").concat(w.temperature.value, " grader - ").concat(w.rain, " regn :umbrella_with_raindrops:} - ").concat(w.windSpeed.name, " (").concat(w.windSpeed.mps, " m/s) :wind_blowing_face:");
+        bot.messageRoom(informasjon, 'Her er værmeldingen for Oslo de neste dagene :sunrise_over_mountains:');
+        bot.messageRoom(informasjon, data.map(function (w) {
+          return "".concat(new Date(w.from).toDateString(), "\n").concat(konverterIkon(w.icon), " - :thermometer: ").concat(w.temperature.value, " grader - :umbrella_with_rain_drops:  ").concat(w.rain, " regn - :wind_blowing_face: ").concat(w.windSpeed.name, " (").concat(w.windSpeed.mps, " m/s) ");
         }).join('\n\n'));
       });
     });

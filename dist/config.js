@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.default = void 0;
 var config = {
   slackrooms: {
-    samboerskapet: '#samboerskap'
+    informasjon: '#informasjon'
   }
 };
 var _default = config;
