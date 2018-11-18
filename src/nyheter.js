@@ -5,6 +5,8 @@
 //  Du må sette en gyldig NEWS_API_KEY gitt av newsapi.org for å kommunisere med newsapi sitt api.
 
 import NewsApi from 'newsapi';
+import { CronJob } from 'cron';
+import config from './config';
 
 require('dotenv').config();
 
@@ -14,32 +16,46 @@ const henteNyheterFeilmelding = () => 'Kunne ikke hente nyheter :cry:';
 
 export const nyheter = (bot) => {
   bot.respond(/nyheter/i, (res) => {
+    hentNyheter();
+  });
+
+  const tz = 'Europe/Oslo';
+  new CronJob('0 8 * * *', hentNyheter, null, true, tz); // Hver dag kl. 8.00
+
+  const hentNyheter = (options = { language: 'no', country: 'no' }) => {
+    const { samboerskapet } = config.slackrooms;
     newsapi.v2
-      .topHeadlines({
-        language: 'no',
-        country: 'no',
-      })
+      .topHeadlines(options)
       .then((response) => {
         const { status, totalResults, articles } = response;
         if (status === 'ok') {
-          res.send(
+          if (articles.length === 0) {
+            bot.messageRoom(samboerskapet, 'Fant ingen nyheter');
+            return;
+          }
+
+          bot.messageRoom(
+            samboerskapet,
             `Hentet ${totalResults} av de siste toppsakene i Norge :newspaper:`,
           );
-          res.send(
+          bot.messageRoom(
+            samboerskapet,
             articles
               .map(
                 article => `*${article.title}* - publisert ${new Date(
                     article.publishedAt,
-                  ).toString()}\n${article.content}\nLes mer: ${article.url}`,
+                  ).toString()}\n${
+                    article.content !== null ? article.content : ''
+                  }\nLes mer: ${article.url}`,
               )
               .join('\n\n'),
           );
         } else {
-          res.send(henteNyheterFeilmelding());
+          bot.messageRoom(samboerskapet, henteNyheterFeilmelding());
         }
       })
       .catch(() => {
-        res.send(henteNyheterFeilmelding());
+        bot.messageRoom(samboerskapet, henteNyheterFeilmelding());
       });
-  });
+  };
 };
