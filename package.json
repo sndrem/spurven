@@ -9,7 +9,8 @@
     "start:dev": "npm run clean && npm run build && npm start",
     "build": "npx babel src --out-dir ./dist",
     "build:watch": "babel src --out-dir ./dist --watch",
-    "clean": "rm -rf ./dist && mkdir ./dist"
+    "clean": "rm -rf ./dist && mkdir ./dist",
+    "deploy": "npm run clean && npm run build && echo \"Klar for deploy. Commit og push til heroku\""
   },
   "dependencies": {
     "cron": "^1.5.0",

@@ -32,6 +32,21 @@ var konverterIkon = function konverterIkon(icon) {
     case 'LightCloud':
       return ':cloud:';
 
+    case 'PartlyCloud':
+      return ':cloud:';
+
+    case 'LightRainSun':
+      return ':partly_sunny_rain:';
+
+    case 'Rain':
+      return ':rain_cloud:';
+
+    case 'Snow':
+      return ':snow_cloud:';
+
+    case 'Fog':
+      return ':fog:';
+
     case 'Cloud':
       return ':cloud:';
 
