@@ -29,6 +29,8 @@
     "hubot-shipit": "^0.2.1",
     "hubot-slack": "^4.5.5",
     "newsapi": "^2.4.0",
+    "request": "^2.88.0",
+    "request-promise": "^4.2.2",
     "yr.no-forecast": "^2.1.0"
   },
   "engines": {

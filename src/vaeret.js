@@ -9,7 +9,6 @@ const yrno = require('yr.no-forecast')({
 });
 
 const LOCATION = {
-  // This is Dublin, Ireland
   lat: 59.916597,
   lon: 10.758096,
 };
