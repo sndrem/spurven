@@ -23,17 +23,31 @@ var kolonialEndpoints = {
     }
   }
 };
+
+var getOptions = function getOptions(uri) {
+  return {
+    uri: uri,
+    headers: {
+      'User-Agent': process.env.KOLONIAL_USER_AGENT,
+      'X-Client-Token': process.env.KOLONIAL_X_CLIENT_TOKEN
+    },
+    json: true
+  };
+};
+
 var kolonialService = {
   getRecipes: function getRecipes(product, cb) {
     var uri = "".concat(_constants.KOLONIAL_HOST_AND_PORT, "/").concat(kolonialEndpoints.search.searchForRecipesWithProduct(product));
-    var options = {
-      uri: uri,
-      headers: {
-        'User-Agent': process.env.KOLONIAL_USER_AGENT,
-        'X-Client-Token': process.env.KOLONIAL_X_CLIENT_TOKEN
-      },
-      json: true
-    };
+    var options = getOptions(uri);
+    (0, _requestPromise.default)(options).then(function (data) {
+      return cb(null, data);
+    }).catch(function (err) {
+      return cb(err, {});
+    });
+  },
+  search: function search(product, cb) {
+    var uri = "".concat(_constants.KOLONIAL_HOST_AND_PORT, "/").concat(kolonialEndpoints.search.searchForProduct(product));
+    var options = getOptions(uri);
     (0, _requestPromise.default)(options).then(function (data) {
       return cb(null, data);
     }).catch(function (err) {
