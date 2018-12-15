@@ -3,39 +3,105 @@ import { KOLONIAL_HOST_AND_PORT } from '../constants/constants';
 
 require('dotenv').config();
 
+let user = null;
+
 const kolonialEndpoints = {
   search: {
     searchForProduct: product => `/api/v1/search/?q=${product}`,
     searchForRecipesWithProduct: product => `/api/v1/search/recipes/?q=${product}`,
   },
+  login: '/api/v1/user/login/',
+  logout: '/api/v1/user/logout/',
+  cart: '/api/v1/cart/',
+};
+
+const getHeaders = () => ({
+  'User-Agent': process.env.KOLONIAL_USER_AGENT,
+  'X-Client-Token': process.env.KOLONIAL_X_CLIENT_TOKEN,
+});
+
+const getLoggedInHeaders = (userContext) => {
+  const headers = getHeaders();
+  return { ...headers, Cookie: `sessionid=${userContext.sessionid}` };
 };
 
 const getOptions = uri => ({
   uri,
-  headers: {
-    'User-Agent': process.env.KOLONIAL_USER_AGENT,
-    'X-Client-Token': process.env.KOLONIAL_X_CLIENT_TOKEN,
-  },
+  headers: getHeaders(),
   json: true,
 });
 
+const getLoggedInOptions = (uri, userContext) => ({
+  uri,
+  headers: getLoggedInHeaders(userContext),
+  json: true,
+});
+
+const getPostOptions = (uri, body) => ({
+  method: 'POST',
+  uri,
+  headers: getHeaders(),
+  body,
+  json: true,
+});
+
+const getDataFromEndpoint = (endpoint, cb) => {
+  const uri = `${KOLONIAL_HOST_AND_PORT}${endpoint}`;
+  const options = getOptions(uri);
+  rp(options)
+    .then(data => cb(null, data))
+    .catch(err => cb(err, {}));
+};
+
 const kolonialService = {
   getRecipes: (product, cb) => {
-    const uri = `${KOLONIAL_HOST_AND_PORT}/${kolonialEndpoints.search.searchForRecipesWithProduct(
-      product,
-    )}`;
-    const options = getOptions(uri);
-    rp(options)
-      .then(data => cb(null, data))
-      .catch(err => cb(err, {}));
+    getDataFromEndpoint(
+      kolonialEndpoints.search.searchForRecipesWithProduct(encodeURI(product)),
+      cb,
+    );
   },
   search: (product, cb) => {
-    const uri = `${KOLONIAL_HOST_AND_PORT}/${kolonialEndpoints.search.searchForProduct(
-      product,
-    )}`;
-    const options = getOptions(uri);
+    getDataFromEndpoint(kolonialEndpoints.search.searchForProduct(encodeURI(product)), cb);
+  },
+  login: (cb) => {
+    const uri = `${KOLONIAL_HOST_AND_PORT}${kolonialEndpoints.login}`;
+    const options = getPostOptions(uri, {
+      username: process.env.KOLONIAL_USERNAME,
+      password: process.env.KOLONIAL_PASSWORD,
+    });
     rp(options)
-      .then(data => cb(null, data))
+      .then((data) => {
+        user = data;
+        cb(null, data);
+      })
+      .catch(err => cb(err, {}));
+  },
+  logout: (cb) => {
+    user = null;
+    const uri = `${KOLONIAL_HOST_AND_PORT}${kolonialEndpoints.logout}`;
+    const options = getPostOptions(uri, {});
+    rp(options)
+      .then((data) => {
+        cb(null, data);
+      })
+      .catch(err => cb(err, {}));
+  },
+  getCart: (cb) => {
+    const uri = `${KOLONIAL_HOST_AND_PORT}${kolonialEndpoints.cart}`;
+    if (!user) {
+      console.log('#### INGEN BRUKER HER ####');
+      cb(
+        { statusCode: 401, message: 'Du må være logget inn for å se innholdet i handlekurven' },
+        {},
+      );
+      return;
+    }
+    const options = getLoggedInOptions(uri, user);
+    rp(options)
+      .then((data) => {
+        console.log('DATA:', data);
+        cb(null, data);
+      })
       .catch(err => cb(err, {}));
   },
 };
