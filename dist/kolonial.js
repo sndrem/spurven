@@ -1,9 +1,19 @@
 "use strict";
 
+require("core-js/modules/es6.object.define-property");
+
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.kolonial = void 0;
+
+require("core-js/modules/es6.array.filter");
+
+require("core-js/modules/es6.regexp.search");
+
+require("core-js/modules/es6.array.map");
+
+require("core-js/modules/es6.regexp.match");
 
 var _kolonialService = _interopRequireDefault(require("./services/kolonialService"));
 

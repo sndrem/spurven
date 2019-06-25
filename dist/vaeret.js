@@ -1,9 +1,15 @@
 "use strict";
 
+require("core-js/modules/es6.object.define-property");
+
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.vaeret = void 0;
+
+require("core-js/modules/es6.function.name");
+
+require("core-js/modules/es6.array.map");
 
 var _config = _interopRequireDefault(require("./config"));
 

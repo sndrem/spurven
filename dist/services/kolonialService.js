@@ -5,6 +5,20 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 
+require("core-js/modules/es6.array.for-each");
+
+require("core-js/modules/es6.array.filter");
+
+require("core-js/modules/web.dom.iterable");
+
+require("core-js/modules/es6.array.iterator");
+
+require("core-js/modules/es6.object.keys");
+
+require("core-js/modules/es6.object.define-property");
+
+require("core-js/modules/es6.regexp.search");
+
 var _requestPromise = _interopRequireDefault(require("request-promise"));
 
 var _constants = require("../constants/constants");
