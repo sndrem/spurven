@@ -37,7 +37,7 @@ export const bysykler = (bot) => {
           return ids.includes(station.station_id);
         });
         filteredStations.forEach(station => {
-          const response = `:bike: På stasjon: ${
+          const response = `:bike: På ${
             bysykkelStativer.find(x => x.id === station.station_id).name
             } er det ${station.num_bikes_available} ledige sykler og ${
             station.num_docks_available
