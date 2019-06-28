@@ -5,11 +5,11 @@ const getProduct = res => (res.match.length > 0 ? res.match[1] : null);
 
 const transformRecipeToString = recipe => `ID: ${recipe.id} - ${recipe.title}, ${recipe.cooking_duration_string} - ${
   recipe.difficulty_string
-}\nLes mer: ${recipe.front_url}`;
+  }\nLes mer: ${recipe.front_url}`;
 
 const transformProductToString = product => `ID: ${product.id} - ${product.full_name}, ${product.gross_price} kr.\nLes mer: ${
   product.front_url
-}\nBilde: ${product.images[0].thumbnail.url}`;
+  }\nBilde: ${product.images[0].thumbnail.url}`;
 
 export const kolonial = (bot) => {
   bot.respond(/oppskrifter (.*)/i, (res) => {
@@ -66,7 +66,7 @@ export const kolonial = (bot) => {
       }
       res.send(
         `Handlekurven inneholder ${data.items.length} produkter til en verdi av kr ${
-          data.total_gross_amount
+        data.total_gross_amount
         } NOK.\n\n${data.extra_lines
           .map(line => `${line.description}: ${line.gross_amount} NOK`)
           .join('\n')}`,

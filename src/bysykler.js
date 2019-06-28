@@ -15,6 +15,7 @@ export const bysykler = (bot) => {
       .get();
     request((err, res, body) => {
       if (err) {
+        bot.logger.error(`Kunne ikke hente data for url=${url}`);
         callback(err, null);
       }
       callback(null, JSON.parse(body));
@@ -22,10 +23,12 @@ export const bysykler = (bot) => {
   }
 
   function checkBikeVacancy() {
+    bot.logger.info("Sjekker tilgjengelighet på sykler fra Oslo bysykkel");
     getData(
       "https://gbfs.urbansharing.com/oslobysykkel.no/station_status.json",
       (err, data) => {
         if (err) {
+          bot.logger.error("Det var et problem ved henting av bysykkeldata");
           bot.messageRoom(
             config.slackrooms.informasjon,
             ":white_frowning_face: Det var et problem ved henting av bysykkeldata :white_frowning_face:"

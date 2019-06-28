@@ -56,6 +56,7 @@ var bysykler = function bysykler(bot) {
               request = bot.http(url).header("Accept", "application/json").header("client-name", "sindrem-slacbot").get();
               request(function (err, res, body) {
                 if (err) {
+                  bot.logger.error("Kunne ikke hente data for url=".concat(url));
                   callback(err, null);
                 }
 
@@ -73,8 +74,10 @@ var bysykler = function bysykler(bot) {
   }
 
   function checkBikeVacancy() {
+    bot.logger.info("Sjekker tilgjengelighet på sykler fra Oslo bysykkel");
     getData("https://gbfs.urbansharing.com/oslobysykkel.no/station_status.json", function (err, data) {
       if (err) {
+        bot.logger.error("Det var et problem ved henting av bysykkeldata");
         bot.messageRoom(_config.default.slackrooms.informasjon, ":white_frowning_face: Det var et problem ved henting av bysykkeldata :white_frowning_face:");
       }
 

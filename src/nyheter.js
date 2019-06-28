@@ -43,9 +43,9 @@ export const nyheter = (bot) => {
             articles
               .map(
                 article => `*${article.title}* - publisert ${new Date(
-                    article.publishedAt,
-                  ).toString()}\n${
-                    article.content !== null ? article.content : ''
+                  article.publishedAt,
+                ).toString()}\n${
+                  article.content !== null ? article.content : ''
                   }\nLes mer: ${article.url}`,
               )
               .join('\n\n'),
