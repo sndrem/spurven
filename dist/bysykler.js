@@ -75,7 +75,6 @@ var bysykler = function bysykler(bot) {
   function checkBikeVacancy() {
     getData("https://gbfs.urbansharing.com/oslobysykkel.no/station_status.json", function (err, data) {
       if (err) {
-        console.log("Faen, noe feilet", err);
         bot.messageRoom(_config.default.slackrooms.informasjon, ":white_frowning_face: Det var et problem ved henting av bysykkeldata :white_frowning_face:");
       }
 
@@ -88,7 +87,7 @@ var bysykler = function bysykler(bot) {
         return ids.includes(station.station_id);
       });
       filteredStations.forEach(function (station) {
-        var response = ":bike: P\xE5 stasjon: ".concat(bysykkelStativer.find(function (x) {
+        var response = ":bike: P\xE5 ".concat(bysykkelStativer.find(function (x) {
           return x.id === station.station_id;
         }).name, " er det ").concat(station.num_bikes_available, " ledige sykler og ").concat(station.num_docks_available, " ledige parkeringer.");
         bot.messageRoom(_config.default.slackrooms.informasjon, response);

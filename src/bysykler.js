@@ -1,3 +1,5 @@
+// Commands:
+//    hubot bysykkel | sykkel - Returnerer info om valgte sykkelparkeringer hos Oslo bysykkel
 import config from './config';
 
 export const bysykler = (bot) => {
@@ -24,7 +26,6 @@ export const bysykler = (bot) => {
       "https://gbfs.urbansharing.com/oslobysykkel.no/station_status.json",
       (err, data) => {
         if (err) {
-          console.log("Faen, noe feilet", err);
           bot.messageRoom(
             config.slackrooms.informasjon,
             ":white_frowning_face: Det var et problem ved henting av bysykkeldata :white_frowning_face:"
