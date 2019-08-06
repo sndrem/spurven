@@ -2,7 +2,7 @@
 //    vanne planter - Forteller deg hvordan du vanner plantene i leiligheten
 //    egg - Forteller deg hvordan du koker egg
 export const home = (bot) => {
-  bot.hear(/(vann(e)?|plant(er)?)/i, (res) => {
+  bot.respond(/(vann(e)?|plant(er)?)/i, (res) => {
     res.send(`Lurer du på hvordan du skal vanne plantene? :leaves:
     * *Husfred* (liten, små blader) skal ha masse vann. Vannes fra undersiden. Settes i skål/vasken med vann i ca. 5 minutter.
     * *Kaktus* skal ha lite vann. Gis litt vann når den er er helt tørr.
@@ -14,7 +14,7 @@ export const home = (bot) => {
     Takk for at du vanner plantene :sunflower:`);
   });
 
-  bot.hear(/^egg$/i, (res) => {
+  bot.respond(/^egg$/i, (res) => {
     res.send(`Slik koker du egg :egg: :smiley_cat:
     *Hardkokt*: Legg x antall egg i kaldt vann i kjelen, og sett på komfyren på høyeste varme.
     Når det koker trekker du kjelen av platen, tar på lokket og venter 11 minutter. Etter 11 minuttene lar du eggene kjøle seg i rennende kaldt vann.`);
