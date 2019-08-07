@@ -14,7 +14,7 @@ export const home = (bot) => {
     Takk for at du vanner plantene :sunflower:`);
   });
 
-  bot.respond(/^egg$/i, (res) => {
+  bot.respond(/egg/i, (res) => {
     res.send(`Slik koker du egg :egg: :smiley_cat:
     *Hardkokt*: Legg x antall egg i kaldt vann i kjelen, og sett på komfyren på høyeste varme.
     Når det koker trekker du kjelen av platen, tar på lokket og venter 11 minutter. Etter 11 minuttene lar du eggene kjøle seg i rennende kaldt vann.`);
