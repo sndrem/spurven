@@ -7,6 +7,8 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.arbeidstilsynet = void 0;
 
+require("core-js/modules/es6.regexp.replace");
+
 require("core-js/modules/es6.string.trim");
 
 require("core-js/modules/es6.regexp.match");
@@ -52,7 +54,7 @@ function svarFraArbeidstilsynet(res, orgnr, err, data) {
 
 function svarFraSentralGodkjenning(res, orgnr, err, data) {
   if (err && err.statusCode === 404) {
-    res.send("Bedrift med orgnr ".concat(orgnr, " finnes ikke i sentral godkjenningsregisteret"));
+    res.send("Bedrift med orgnr ".concat(orgnr, " finnes ikke i det sentrale godkjenningsregisteret"));
     return;
   } else if (err) {
     res.send("Det skjedde en feil ved henting av bedriftsdata fra sentral godkjenningsregisteret for bedrift med orgnr: ".concat(orgnr, "."));
@@ -75,7 +77,7 @@ function svarFraSentralGodkjenning(res, orgnr, err, data) {
 
   if (erGodkjent) {
     res.send(":bird: Jeg har n\xE5 sjekket ".concat(verdiEllerDefault(name, "Navn ikke tilgjengelig"), " | Tlf: ").concat(verdiEllerDefault(phone, ""), " | Email: ").concat(verdiEllerDefault(email, ""), " | Nett: ").concat(verdiEllerDefault(www, "")));
-    res.send(":thumbsup: ".concat(name, " med orgnr: ").concat(orgnr, " er godkjent i Sentral godkjenningsregisteret. Lenke til godkjenningsbevis: ").concat(approval_certificate, "."));
+    res.send(":thumbsup: ".concat(name, " med orgnr: ").concat(orgnr, " er godkjent i det sentrale godkjenningsregisteret. Lenke til godkjenningsbevis: ").concat(approval_certificate, "."));
   }
 }
 
@@ -86,9 +88,11 @@ function verdiEllerDefault(verdi, defaultVerdi) {
 
 var arbeidstilsynet = function arbeidstilsynet(bot) {
   bot.respond(/sjekk (\d*)/i, function (res) {
-    var orgnr = res.match[1];
+    console.log(res.match);
+    var orgnr = res.match[1].replace(/\s/g, "").trim();
+    console.log("Orgnr", orgnr);
 
-    if (orgnr.trim().length !== 9) {
+    if (orgnr.length !== 9) {
       res.send("Organisasjonsnummer må være 9 siffer. Prøv igjen :recycle:");
       return;
     }

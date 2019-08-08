@@ -33,7 +33,7 @@ function svarFraArbeidstilsynet(res, orgnr, err, data) {
 
 function svarFraSentralGodkjenning(res, orgnr, err, data) {
   if (err && err.statusCode === 404) {
-    res.send(`Bedrift med orgnr ${orgnr} finnes ikke i sentral godkjenningsregisteret`);
+    res.send(`Bedrift med orgnr ${orgnr} finnes ikke i det sentrale godkjenningsregisteret`);
     return;
   } else if (err) {
     res.send(`Det skjedde en feil ved henting av bedriftsdata fra sentral godkjenningsregisteret for bedrift med orgnr: ${orgnr}.`);
@@ -45,7 +45,7 @@ function svarFraSentralGodkjenning(res, orgnr, err, data) {
   const { name = "Navn ikke tilgjengelig", www = "", email = "", phone = "" } = bedrift.enterprise;
   if (erGodkjent) {
     res.send(`:bird: Jeg har nå sjekket ${verdiEllerDefault(name, "Navn ikke tilgjengelig")} | Tlf: ${verdiEllerDefault(phone, "")} | Email: ${verdiEllerDefault(email, "")} | Nett: ${verdiEllerDefault(www, "")}`);
-    res.send(`:thumbsup: ${name} med orgnr: ${orgnr} er godkjent i Sentral godkjenningsregisteret. Lenke til godkjenningsbevis: ${approval_certificate}.`);
+    res.send(`:thumbsup: ${name} med orgnr: ${orgnr} er godkjent i det sentrale godkjenningsregisteret. Lenke til godkjenningsbevis: ${approval_certificate}.`);
   }
 }
 
@@ -57,8 +57,8 @@ function verdiEllerDefault(verdi, defaultVerdi) {
 
 export const arbeidstilsynet = (bot) => {
   bot.respond(/sjekk (\d*)/i, (res) => {
-    const orgnr = res.match[1];
-    if (orgnr.replace(/\s/g, "").trim().length !== 9) {
+    const orgnr = res.match[1].trim();
+    if (orgnr.length !== 9) {
       res.send("Organisasjonsnummer må være 9 siffer. Prøv igjen :recycle:");
       return;
     }
