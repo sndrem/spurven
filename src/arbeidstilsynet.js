@@ -58,7 +58,7 @@ function verdiEllerDefault(verdi, defaultVerdi) {
 export const arbeidstilsynet = (bot) => {
   bot.respond(/sjekk (\d*)/i, (res) => {
     const orgnr = res.match[1];
-    if (orgnr.trim().length !== 9) {
+    if (orgnr.replace(/\s/g, "").trim().length !== 9) {
       res.send("Organisasjonsnummer må være 9 siffer. Prøv igjen :recycle:");
       return;
     }
