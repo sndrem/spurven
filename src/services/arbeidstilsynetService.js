@@ -1,5 +1,5 @@
 import rp from 'request-promise';
-import { ARBEIDSTILSYNET_HOST_AND_PORT } from '../constants/constants';
+import { ARBEIDSTILSYNET_HOST_AND_PORT, SENTRAL_GODKJENNING_HOST_AND_PORT } from '../constants/constants';
 
 const arbeidstilsynetService = {
     sjekkBedrift: (orgnr, cb) => {
@@ -12,7 +12,16 @@ const arbeidstilsynetService = {
                 }
             })
             .catch(error => {
-                cb(`Det skjedde en feil ved henting av data for org: ${orgnr}. Enten er tjenestene til nettsiden nede, eller så er det dårlig programmering. Snakk med Sindre :man-shrugging:`, []);
+                cb(`Det skjedde en feil ved henting av data for org: ${orgnr}. Enten er tjenestene til arbeidstilsynet nede, eller så er det dårlig programmering. Snakk med Sindre :man-shrugging:`, []);
+            })
+    },
+    sjekkSentralGodkjenning: (orgnr, cb) => {
+        rp.get(`${SENTRAL_GODKJENNING_HOST_AND_PORT}/${orgnr}`)
+            .then(data => {
+                cb(null, JSON.parse(data));
+            })
+            .catch(error => {
+                cb(error, []);
             })
     }
 }

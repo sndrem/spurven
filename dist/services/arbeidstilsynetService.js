@@ -22,7 +22,14 @@ var arbeidstilsynetService = {
         cb("Fant ingen bedrifter p\xE5 orgnr: ".concat(orgnr), []);
       }
     }).catch(function (error) {
-      cb("Det skjedde en feil ved henting av data for org: ".concat(orgnr, ". Enten er tjenestene til nettsiden nede, eller s\xE5 er det d\xE5rlig programmering. Snakk med Sindre :man-shrugging:"), []);
+      cb("Det skjedde en feil ved henting av data for org: ".concat(orgnr, ". Enten er tjenestene til arbeidstilsynet nede, eller s\xE5 er det d\xE5rlig programmering. Snakk med Sindre :man-shrugging:"), []);
+    });
+  },
+  sjekkSentralGodkjenning: function sjekkSentralGodkjenning(orgnr, cb) {
+    _requestPromise.default.get("".concat(_constants.SENTRAL_GODKJENNING_HOST_AND_PORT, "/").concat(orgnr)).then(function (data) {
+      cb(null, JSON.parse(data));
+    }).catch(function (error) {
+      cb(error, []);
     });
   }
 };
