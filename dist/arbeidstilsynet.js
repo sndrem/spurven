@@ -7,11 +7,9 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.arbeidstilsynet = void 0;
 
-require("core-js/modules/es6.regexp.replace");
+require("core-js/modules/es6.regexp.match");
 
 require("core-js/modules/es6.string.trim");
-
-require("core-js/modules/es6.regexp.match");
 
 require("core-js/modules/es6.function.name");
 
@@ -82,15 +80,12 @@ function svarFraSentralGodkjenning(res, orgnr, err, data) {
 }
 
 function verdiEllerDefault(verdi, defaultVerdi) {
-  if (verdi) return verdi;
-  return defaultVerdi;
+  return verdi ? verdi : defaultVerdi;
 }
 
 var arbeidstilsynet = function arbeidstilsynet(bot) {
   bot.respond(/sjekk (\d*)/i, function (res) {
-    console.log(res.match);
-    var orgnr = res.match[1].replace(/\s/g, "").trim();
-    console.log("Orgnr", orgnr);
+    var orgnr = res.match[1].trim();
 
     if (orgnr.length !== 9) {
       res.send("Organisasjonsnummer må være 9 siffer. Prøv igjen :recycle:");

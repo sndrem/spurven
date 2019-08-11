@@ -50,9 +50,7 @@ function svarFraSentralGodkjenning(res, orgnr, err, data) {
 }
 
 function verdiEllerDefault(verdi, defaultVerdi) {
-  if (verdi) return verdi;
-
-  return defaultVerdi;
+  return verdi ? verdi : defaultVerdi;
 }
 
 export const arbeidstilsynet = (bot) => {

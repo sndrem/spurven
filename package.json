@@ -5,7 +5,7 @@
   "author": "Sindre Moldeklev <sindre.moldeklev@bekk.no>",
   "description": "En vennlig bot for å hjelpe med hverdagslige sysler i hjemmet",
   "scripts": {
-    "start": "bin/hubot --adapter slack",
+    "start": "hubot-dotenv -n bin/hubot --adapter slack",
     "start:dev": "npm run clean && npm run build && npm start",
     "build": "npx babel src --out-dir ./dist",
     "build:watch": "babel src --out-dir ./dist --watch",
@@ -17,6 +17,7 @@
     "dotenv": "^6.1.0",
     "hubot": "^3.1.1",
     "hubot-diagnostics": "^1.0.0",
+    "hubot-dotenv": "^1.0.0",
     "hubot-google-images": "^0.2.7",
     "hubot-google-translate": "^0.2.1",
     "hubot-help": "^1.0.1",
