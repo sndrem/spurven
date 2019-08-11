@@ -1,5 +1,14 @@
 # spurven
 
+### Starte utvikling
+1. Kjør `npm install` for å installere avhengigheter
+2. Kjør `npm run start:dev` for å bygge lokalt og starte serveren. Miljøvariabler blir lastet fra .env-filen når man utvikler lokalt.
+
+### Hvordan deploye en ny versjon
+1. Gjør endringene dine
+2. `git commit` alle endringene og push til master
+3. Ved ny push til master deployes endringene automatisk til Heroku.
+
 ### For å legge til fil med kommandoer gjør følgende:
 
 1. Kjør kommandoen `node tools/nyKommandoFil.js filnavn.js navn` hvor filnavn.js er navnet på selve filen, mens navn er variabelnavnet som blir satt inn i filen.
