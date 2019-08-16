@@ -9,6 +9,8 @@ exports.arbeidstilsynet = void 0;
 
 require("core-js/modules/es6.regexp.match");
 
+require("core-js/modules/es6.regexp.replace");
+
 require("core-js/modules/es6.string.trim");
 
 require("core-js/modules/es6.function.name");
@@ -52,7 +54,7 @@ function svarFraArbeidstilsynet(res, orgnr, err, data) {
 
 function svarFraSentralGodkjenning(res, orgnr, err, data) {
   if (err && err.statusCode === 404) {
-    res.send("Bedrift med orgnr ".concat(orgnr, " finnes ikke i det sentrale godkjenningsregisteret"));
+    res.send("Bedrift med orgnr ".concat(orgnr, " finnes ikke i det sentrale godkjenningsregisteret."));
     return;
   } else if (err) {
     res.send("Det skjedde en feil ved henting av bedriftsdata fra sentral godkjenningsregisteret for bedrift med orgnr: ".concat(orgnr, "."));
@@ -83,9 +85,13 @@ function verdiEllerDefault(verdi, defaultVerdi) {
   return verdi ? verdi : defaultVerdi;
 }
 
+function sjekkerOrganisasjon(organisasjon) {
+  return "Sjekker bedrift hos ".concat(organisasjon, " for deg...");
+}
+
 var arbeidstilsynet = function arbeidstilsynet(bot) {
-  bot.respond(/sjekk (\d*)/i, function (res) {
-    var orgnr = res.match[1].trim();
+  bot.respond(/sjekk (\d+(?:\s+\d+)*)/i, function (res) {
+    var orgnr = res.match[1].replace(/\s/g, "").trim();
 
     if (orgnr.length !== 9) {
       res.send("Organisasjonsnummer må være 9 siffer. Prøv igjen :recycle:");
@@ -93,17 +99,24 @@ var arbeidstilsynet = function arbeidstilsynet(bot) {
     }
 
     if (orgnr) {
-      res.send("Sjekker bedrift hos arbeidstilsynet for deg...");
+      res.send(sjekkerOrganisasjon("Arbeidstilsynet"));
 
       _arbeidstilsynetService.default.sjekkBedrift(orgnr, function (err, data) {
         svarFraArbeidstilsynet(res, orgnr, err, data);
         res.send("\n----------------------------------\n");
-        res.send("Sjekker bedrift hos sentral godkjenning...");
+        res.send(sjekkerOrganisasjon("Sentral godkjenning"));
 
         _arbeidstilsynetService.default.sjekkSentralGodkjenning(orgnr, function (sentralError, sentralData) {
           svarFraSentralGodkjenning(res, orgnr, sentralError, sentralData);
         });
       });
+    }
+  });
+  bot.hear(/^(?!sjekk|sjekker).+ (\d+(?:\s+\d+)*)/gmi, function (res) {
+    console.log(res.match);
+
+    if (res.match[1] && res.match[1].length === 9) {
+      res.send(":wave: Jeg ser du nevner et organisasjonsnummer. Dersom du vil vite om godkjennelser for organisasjonen kan du skrive `sjekk <orgnr>` der <orgnr> er byttet ut med organisasjonsnummeret du lurer på. Jeg vil da sjekke organisasjonen for deg :smirk_cat:.");
     }
   });
 };

@@ -33,7 +33,7 @@ function svarFraArbeidstilsynet(res, orgnr, err, data) {
 
 function svarFraSentralGodkjenning(res, orgnr, err, data) {
   if (err && err.statusCode === 404) {
-    res.send(`Bedrift med orgnr ${orgnr} finnes ikke i det sentrale godkjenningsregisteret`);
+    res.send(`Bedrift med orgnr ${orgnr} finnes ikke i det sentrale godkjenningsregisteret.`);
     return;
   } else if (err) {
     res.send(`Det skjedde en feil ved henting av bedriftsdata fra sentral godkjenningsregisteret for bedrift med orgnr: ${orgnr}.`);
@@ -53,24 +53,27 @@ function verdiEllerDefault(verdi, defaultVerdi) {
   return verdi ? verdi : defaultVerdi;
 }
 
+function sjekkerOrganisasjon(organisasjon) {
+  return `Sjekker bedrift hos ${organisasjon} for deg...`;
+}
+
 export const arbeidstilsynet = (bot) => {
-  bot.respond(/sjekk (\d*)/i, (res) => {
-    const orgnr = res.match[1].trim();
+  bot.respond(/sjekk (\d+(?:\s+\d+)*)/i, (res) => {
+    const orgnr = res.match[1].replace(/\s/g, "").trim();
     if (orgnr.length !== 9) {
       res.send("Organisasjonsnummer må være 9 siffer. Prøv igjen :recycle:");
       return;
     }
     if (orgnr) {
-      res.send("Sjekker bedrift hos arbeidstilsynet for deg...");
+      res.send(sjekkerOrganisasjon("Arbeidstilsynet"));
       service.sjekkBedrift(orgnr, (err, data) => {
         svarFraArbeidstilsynet(res, orgnr, err, data);
         res.send("\n----------------------------------\n")
-        res.send("Sjekker bedrift hos sentral godkjenning...");
+        res.send(sjekkerOrganisasjon("Sentral godkjenning"));
         service.sjekkSentralGodkjenning(orgnr, (sentralError, sentralData) => {
           svarFraSentralGodkjenning(res, orgnr, sentralError, sentralData);
         })
       });
-
     }
   });
 };
