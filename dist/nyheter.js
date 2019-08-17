@@ -11,6 +11,8 @@ require("core-js/modules/es6.regexp.to-string");
 
 require("core-js/modules/es6.date.to-string");
 
+require("core-js/modules/es6.object.to-string");
+
 require("core-js/modules/es6.array.map");
 
 var _newsapi = _interopRequireDefault(require("newsapi"));
@@ -19,7 +21,7 @@ var _cron = require("cron");
 
 var _config = _interopRequireDefault(require("./config"));
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 // Description:
 //  Dette scriptet interagerer med newsapi for å gi oss de siste toppsakene i Norge
@@ -28,7 +30,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 //  Du må sette en gyldig NEWS_API_KEY gitt av newsapi.org for å kommunisere med newsapi sitt api.
 require('dotenv').config();
 
-var newsapi = new _newsapi.default(process.env.NEWS_API_KEY);
+var newsapi = new _newsapi["default"](process.env.NEWS_API_KEY);
 
 var henteNyheterFeilmelding = function henteNyheterFeilmelding() {
   return 'Kunne ikke hente nyheter :cry:';
@@ -46,7 +48,7 @@ var nyheter = function nyheter(bot) {
       language: 'no',
       country: 'no'
     };
-    var informasjon = _config.default.slackrooms.informasjon;
+    var informasjon = _config["default"].slackrooms.informasjon;
     newsapi.v2.topHeadlines(options).then(function (response) {
       var status = response.status,
           totalResults = response.totalResults,
@@ -65,7 +67,7 @@ var nyheter = function nyheter(bot) {
       } else {
         bot.messageRoom(informasjon, henteNyheterFeilmelding());
       }
-    }).catch(function () {
+    })["catch"](function () {
       bot.messageRoom(informasjon, henteNyheterFeilmelding());
     });
   };

@@ -17,7 +17,7 @@ require("core-js/modules/es6.function.name");
 
 var _arbeidstilsynetService = _interopRequireDefault(require("./services/arbeidstilsynetService"));
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 function svarFraArbeidstilsynet(res, orgnr, err, data) {
   if (err) {
@@ -101,22 +101,15 @@ var arbeidstilsynet = function arbeidstilsynet(bot) {
     if (orgnr) {
       res.send(sjekkerOrganisasjon("Arbeidstilsynet"));
 
-      _arbeidstilsynetService.default.sjekkBedrift(orgnr, function (err, data) {
+      _arbeidstilsynetService["default"].sjekkBedrift(orgnr, function (err, data) {
         svarFraArbeidstilsynet(res, orgnr, err, data);
         res.send("\n----------------------------------\n");
         res.send(sjekkerOrganisasjon("Sentral godkjenning"));
 
-        _arbeidstilsynetService.default.sjekkSentralGodkjenning(orgnr, function (sentralError, sentralData) {
+        _arbeidstilsynetService["default"].sjekkSentralGodkjenning(orgnr, function (sentralError, sentralData) {
           svarFraSentralGodkjenning(res, orgnr, sentralError, sentralData);
         });
       });
-    }
-  });
-  bot.hear(/^(?!sjekk|sjekker).+ (\d+(?:\s+\d+)*)/gmi, function (res) {
-    console.log(res.match);
-
-    if (res.match[1] && res.match[1].length === 9) {
-      res.send(":wave: Jeg ser du nevner et organisasjonsnummer. Dersom du vil vite om godkjennelser for organisasjonen kan du skrive `sjekk <orgnr>` der <orgnr> er byttet ut med organisasjonsnummeret du lurer på. Jeg vil da sjekke organisasjonen for deg :smirk_cat:.");
     }
   });
 };

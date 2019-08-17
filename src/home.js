@@ -1,6 +1,3 @@
-// Commands:
-//    vanne planter - Forteller deg hvordan du vanner plantene i leiligheten
-//    egg - Forteller deg hvordan du koker egg
 export const home = (bot) => {
   bot.respond(/(vann(e)?|plant(er)?)/i, (res) => {
     res.send(`Lurer du på hvordan du skal vanne plantene? :leaves:

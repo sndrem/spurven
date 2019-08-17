@@ -1,7 +1,7 @@
 import kolonialService from './services/kolonialService';
 
 const specifyProductError = () => 'Du må spesifisere hvilket produkt du ønsker oppskrift for. Feks. oppskrifter <pølse>';
-const getProduct = res => (res.match.length > 0 ? res.match[1] : null);
+const getProduct = (res, matchNumber = 1) => (res.match.length > 0 ? res.match[matchNumber] : null);
 
 const transformRecipeToString = recipe => `ID: ${recipe.id} - ${recipe.title}, ${recipe.cooking_duration_string} - ${
   recipe.difficulty_string
@@ -40,6 +40,7 @@ export const kolonial = (bot) => {
     res.send(`Søker etter ${product} for deg`);
     kolonialService.search(product, (err, data) => {
       if (err) {
+        console.log("Feil ved søk", err);
         res.send(`Jeg fant dessverre ingen treff for ${product}`);
         return;
       }
@@ -74,6 +75,36 @@ export const kolonial = (bot) => {
       res.send('\n\nHer er varene du har i handlekurven nå');
       res.send(data.items.map(item => transformProductToString(item.product)).join('\n\n'));
     });
+  });
+
+  bot.respond(/legg til (\d+) av (\d+)/i, (res) => {
+    const antall = getProduct(res, 1);
+    const produktId = getProduct(res, 2);
+    const items = {
+      "items": [
+        {
+          "product_id": produktId,
+          "quantity": antall
+        }
+      ]
+    }
+    kolonialService.leggTilICart(items, (err, data) => {
+      if (err) {
+        res.send(`Klarte ikke legge til ${antall} av vare med id ${produktId}... Prøv på nytt eller gå til www.kolonial.no og prøv der.`);
+      }
+
+      console.log("Data", data);
+      if (data && data.items) {
+        const produktLagttil = data.items.find(p => p.product.id === parseInt(produktId));
+        res.send(`La til ${produktLagttil.product.full_name} i handlekurven.`);
+        res.send(`Handlekurven består nå av\n${data.items.map(p => {
+          return `* ${p.product.full_name} (${p.product.quantity}) - ${p.product.display_price_total} NOK`
+        }).join("\n")}`);
+
+        res.send(`Totalt antall varer i handlekurven er: ${data.product_quantity_count} til en pris av ${data.total_gross_amount} NOK`);
+      }
+    });
+
   });
 
   bot.respond(/(login|logg inn)/i, (res) => {

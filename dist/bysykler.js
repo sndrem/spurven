@@ -9,13 +9,13 @@ exports.bysykler = void 0;
 
 require("core-js/modules/es6.promise");
 
+require("core-js/modules/es6.object.to-string");
+
 require("regenerator-runtime/runtime");
 
 require("core-js/modules/es6.array.find");
 
 require("core-js/modules/es6.function.name");
-
-require("core-js/modules/web.dom.iterable");
 
 require("core-js/modules/es6.array.for-each");
 
@@ -29,7 +29,7 @@ require("core-js/modules/es6.array.map");
 
 var _config = _interopRequireDefault(require("./config"));
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 
@@ -68,7 +68,7 @@ var bysykler = function bysykler(bot) {
               return _context.stop();
           }
         }
-      }, _callee, this);
+      }, _callee);
     }));
     return _getData.apply(this, arguments);
   }
@@ -78,11 +78,11 @@ var bysykler = function bysykler(bot) {
     getData("https://gbfs.urbansharing.com/oslobysykkel.no/station_status.json", function (err, data) {
       if (err) {
         bot.logger.error("Det var et problem ved henting av bysykkeldata");
-        bot.messageRoom(_config.default.slackrooms.informasjon, ":white_frowning_face: Det var et problem ved henting av bysykkeldata :white_frowning_face:");
+        bot.messageRoom(_config["default"].slackrooms.informasjon, ":white_frowning_face: Det var et problem ved henting av bysykkeldata :white_frowning_face:");
       }
 
       var stations = data.data.stations;
-      var bysykkelStativer = _config.default.bysykkelStativer;
+      var bysykkelStativer = _config["default"].bysykkelStativer;
       var ids = bysykkelStativer.map(function (x) {
         return x.id;
       });
@@ -93,7 +93,7 @@ var bysykler = function bysykler(bot) {
         var response = ":bike: P\xE5 ".concat(bysykkelStativer.find(function (x) {
           return x.id === station.station_id;
         }).name, " er det ").concat(station.num_bikes_available, " ledige sykler og ").concat(station.num_docks_available, " ledige parkeringer.");
-        bot.messageRoom(_config.default.slackrooms.informasjon, response);
+        bot.messageRoom(_config["default"].slackrooms.informasjon, response);
       });
     });
   }

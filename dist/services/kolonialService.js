@@ -3,15 +3,23 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.default = void 0;
+exports["default"] = void 0;
+
+require("core-js/modules/es6.object.define-properties");
+
+require("core-js/modules/es7.object.get-own-property-descriptors");
 
 require("core-js/modules/es6.array.for-each");
 
 require("core-js/modules/es6.array.filter");
 
+require("core-js/modules/es6.symbol");
+
 require("core-js/modules/web.dom.iterable");
 
 require("core-js/modules/es6.array.iterator");
+
+require("core-js/modules/es6.object.to-string");
 
 require("core-js/modules/es6.object.keys");
 
@@ -23,9 +31,11 @@ var _requestPromise = _interopRequireDefault(require("request-promise"));
 
 var _constants = require("../constants/constants");
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; var ownKeys = Object.keys(source); if (typeof Object.getOwnPropertySymbols === 'function') { ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) { return Object.getOwnPropertyDescriptor(source, sym).enumerable; })); } ownKeys.forEach(function (key) { _defineProperty(target, key, source[key]); }); } return target; }
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(source, true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
@@ -43,7 +53,8 @@ var kolonialEndpoints = {
   },
   login: '/api/v1/user/login/',
   logout: '/api/v1/user/logout/',
-  cart: '/api/v1/cart/'
+  cart: '/api/v1/cart/',
+  leggTilICart: '/api/v1/cart/items/'
 };
 
 var getHeaders = function getHeaders() {
@@ -89,11 +100,20 @@ var getPostOptions = function getPostOptions(uri, body) {
 var getDataFromEndpoint = function getDataFromEndpoint(endpoint, cb) {
   var uri = "".concat(_constants.KOLONIAL_HOST_AND_PORT).concat(endpoint);
   var options = getOptions(uri);
-  (0, _requestPromise.default)(options).then(function (data) {
+  (0, _requestPromise["default"])(options).then(function (data) {
     return cb(null, data);
-  }).catch(function (err) {
+  })["catch"](function (err) {
     return cb(err, {});
   });
+};
+
+var ingenBruker = function ingenBruker(cb) {
+  console.log('#### INGEN BRUKER HER ####');
+  cb({
+    statusCode: 401,
+    message: 'Du må være logget inn for å se innholdet i handlekurven'
+  }, {});
+  return;
 };
 
 var kolonialService = {
@@ -109,20 +129,21 @@ var kolonialService = {
       username: process.env.KOLONIAL_USERNAME,
       password: process.env.KOLONIAL_PASSWORD
     });
-    (0, _requestPromise.default)(options).then(function (data) {
+    (0, _requestPromise["default"])(options).then(function (data) {
       user = data;
       cb(null, data);
-    }).catch(function (err) {
-      return cb(err, {});
+    })["catch"](function (err) {
+      console.log("Error ved innlogging", err);
+      cb(err, {});
     });
   },
   logout: function logout(cb) {
     user = null;
     var uri = "".concat(_constants.KOLONIAL_HOST_AND_PORT).concat(kolonialEndpoints.logout);
     var options = getPostOptions(uri, {});
-    (0, _requestPromise.default)(options).then(function (data) {
+    (0, _requestPromise["default"])(options).then(function (data) {
       cb(null, data);
-    }).catch(function (err) {
+    })["catch"](function (err) {
       return cb(err, {});
     });
   },
@@ -130,22 +151,42 @@ var kolonialService = {
     var uri = "".concat(_constants.KOLONIAL_HOST_AND_PORT).concat(kolonialEndpoints.cart);
 
     if (!user) {
-      console.log('#### INGEN BRUKER HER ####');
-      cb({
-        statusCode: 401,
-        message: 'Du må være logget inn for å se innholdet i handlekurven'
-      }, {});
-      return;
+      return ingenBruker(cb);
     }
 
     var options = getLoggedInOptions(uri, user);
-    (0, _requestPromise.default)(options).then(function (data) {
+    (0, _requestPromise["default"])(options).then(function (data) {
       console.log('DATA:', data);
       cb(null, data);
-    }).catch(function (err) {
+    })["catch"](function (err) {
       return cb(err, {});
+    });
+  },
+  leggTilICart: function leggTilICart(items, cb) {
+    console.log(items);
+    var uri = "".concat(_constants.KOLONIAL_HOST_AND_PORT).concat(kolonialEndpoints.leggTilICart);
+
+    if (!user) {
+      return ingenBruker(cb);
+    }
+
+    var options = getLoggedInOptions(uri, user);
+
+    var payload = _objectSpread({}, options, {
+      method: "POST",
+      json: true,
+      body: items
+    });
+
+    console.log(JSON.stringify(payload, null, 2));
+    (0, _requestPromise["default"])(payload).then(function (data) {
+      console.log("Varer lagt til i handlekurven", data);
+      cb(null, data);
+    })["catch"](function (err) {
+      console.log("Det skjedde en feil når vi la til i carten", err);
+      cb(err, {});
     });
   }
 };
 var _default = kolonialService;
-exports.default = _default;
+exports["default"] = _default;

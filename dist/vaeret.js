@@ -13,7 +13,7 @@ require("core-js/modules/es6.array.map");
 
 var _config = _interopRequireDefault(require("./config"));
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 var yrno = require('yr.no-forecast')({
   version: '1.9',
@@ -61,7 +61,7 @@ var konverterIkon = function konverterIkon(icon) {
 };
 
 var vaeret = function vaeret(bot) {
-  var informasjon = _config.default.slackrooms.informasjon;
+  var informasjon = _config["default"].slackrooms.informasjon;
 
   var hentVaerData = function hentVaerData() {
     yrno.getWeather(LOCATION).then(function (weather) {

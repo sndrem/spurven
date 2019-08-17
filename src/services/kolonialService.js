@@ -13,6 +13,7 @@ const kolonialEndpoints = {
   login: '/api/v1/user/login/',
   logout: '/api/v1/user/logout/',
   cart: '/api/v1/cart/',
+  leggTilICart: '/api/v1/cart/items/'
 };
 
 const getHeaders = () => ({
@@ -53,6 +54,15 @@ const getDataFromEndpoint = (endpoint, cb) => {
     .catch(err => cb(err, {}));
 };
 
+const ingenBruker = cb => {
+  console.log('#### INGEN BRUKER HER ####');
+  cb(
+    { statusCode: 401, message: 'Du må være logget inn for å se innholdet i handlekurven' },
+    {},
+  );
+  return;
+}
+
 const kolonialService = {
   getRecipes: (product, cb) => {
     getDataFromEndpoint(
@@ -74,7 +84,10 @@ const kolonialService = {
         user = data;
         cb(null, data);
       })
-      .catch(err => cb(err, {}));
+      .catch(err => {
+        console.log("Error ved innlogging", err);
+        cb(err, {});
+      });
   },
   logout: (cb) => {
     user = null;
@@ -89,12 +102,7 @@ const kolonialService = {
   getCart: (cb) => {
     const uri = `${KOLONIAL_HOST_AND_PORT}${kolonialEndpoints.cart}`;
     if (!user) {
-      console.log('#### INGEN BRUKER HER ####');
-      cb(
-        { statusCode: 401, message: 'Du må være logget inn for å se innholdet i handlekurven' },
-        {},
-      );
-      return;
+      return ingenBruker(cb);
     }
     const options = getLoggedInOptions(uri, user);
     rp(options)
@@ -104,6 +112,31 @@ const kolonialService = {
       })
       .catch(err => cb(err, {}));
   },
+  leggTilICart: (items, cb) => {
+    console.log(items);
+    const uri = `${KOLONIAL_HOST_AND_PORT}${kolonialEndpoints.leggTilICart}`;
+    if (!user) {
+      return ingenBruker(cb);
+    }
+    const options = getLoggedInOptions(uri, user);
+    const payload = {
+      ...options,
+      method: "POST",
+      json: true,
+      body: items
+    };
+    console.log(JSON.stringify(payload, null, 2));
+    rp(payload)
+      .then(data => {
+        console.log("Varer lagt til i handlekurven", data);
+        cb(null, data);
+      })
+      .catch(err => {
+        console.log("Det skjedde en feil når vi la til i carten", err);
+        cb(err, {});
+      });
+
+  }
 };
 
 export default kolonialService;

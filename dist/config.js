@@ -5,7 +5,7 @@ require("core-js/modules/es6.object.define-property");
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.default = void 0;
+exports["default"] = void 0;
 var config = {
   slackrooms: {
     informasjon: '#informasjon'
@@ -34,4 +34,4 @@ var config = {
   }]
 };
 var _default = config;
-exports.default = _default;
+exports["default"] = _default;
