@@ -126,7 +126,7 @@ export const kolonial = (bot) => {
         res.send('Klarte ikke logge ut akkurat nå. Prøv igjen senere');
         return;
       }
-      res.send('Du er nå logget ut.);
+      res.send('Du er nå logget ut.');
     });
   });
 };
