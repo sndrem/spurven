@@ -93,7 +93,6 @@ export const kolonial = (bot) => {
         res.send(`Klarte ikke legge til ${antall} av vare med id ${produktId}... Prøv på nytt eller gå til www.kolonial.no og prøv der.`);
       }
 
-      console.log("Data", data);
       if (data && data.items) {
         const produktLagttil = data.items.find(p => p.product.id === parseInt(produktId));
         res.send(`La til ${produktLagttil.product.full_name} i handlekurven.`);
@@ -108,7 +107,7 @@ export const kolonial = (bot) => {
   });
 
   bot.respond(/(login|logg inn)/i, (res) => {
-    res.send('Logger inn med Sindres bruker...');
+    res.send('Logger inn...');
     kolonialService.login((err, data) => {
       if (err) {
         res.send(
@@ -116,18 +115,18 @@ export const kolonial = (bot) => {
         );
         return;
       }
-      res.send('Du er nå logget inn med Sindres bruker');
+      res.send(`Du er nå logget inn med ${data.user.first_name} ${data.user.last_name} sin bruker.`);
     });
   });
 
   bot.respond(/(logout|logg ut)/i, (res) => {
-    res.send('Logger ut av Sindres bruker...');
+    res.send('Logger ut...');
     kolonialService.logout((err, data) => {
       if (err) {
         res.send('Klarte ikke logge ut akkurat nå. Prøv igjen senere');
         return;
       }
-      res.send('Du er nå logget ut av Sindres bruker');
+      res.send('Du er nå logget ut.);
     });
   });
 };

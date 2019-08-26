@@ -125,7 +125,6 @@ const kolonialService = {
       json: true,
       body: items
     };
-    console.log(JSON.stringify(payload, null, 2));
     rp(payload)
       .then(data => {
         console.log("Varer lagt til i handlekurven", data);

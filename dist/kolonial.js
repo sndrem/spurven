@@ -126,8 +126,6 @@ var kolonial = function kolonial(bot) {
         res.send("Klarte ikke legge til ".concat(antall, " av vare med id ").concat(produktId, "... Pr\xF8v p\xE5 nytt eller g\xE5 til www.kolonial.no og pr\xF8v der."));
       }
 
-      console.log("Data", data);
-
       if (data && data.items) {
         var produktLagttil = data.items.find(function (p) {
           return p.product.id === parseInt(produktId);
@@ -141,7 +139,7 @@ var kolonial = function kolonial(bot) {
     });
   });
   bot.respond(/(login|logg inn)/i, function (res) {
-    res.send('Logger inn med Sindres bruker...');
+    res.send('Logger inn...');
 
     _kolonialService["default"].login(function (err, data) {
       if (err) {
@@ -149,7 +147,7 @@ var kolonial = function kolonial(bot) {
         return;
       }
 
-      res.send('Du er nå logget inn med Sindres bruker');
+      res.send("Du er n\xE5 logget inn med ".concat(data.user.first_name, " ").concat(data.user.last_name, " sin bruker."));
     });
   });
   bot.respond(/(logout|logg ut)/i, function (res) {
