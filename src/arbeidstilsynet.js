@@ -18,14 +18,14 @@ function svarFraArbeidstilsynet(res, orgnr, err, data) {
 
     const erGodkjent = recordStatus["Valid"];
     if (erGodkjent) {
-      res.send(`:thumbsup: ${org["Name"]} er ${recordStatus["Status"].toLowerCase()}`);
+      res.send(`:white_check_mark: ${org["Name"]} er ${recordStatus["Status"].toLowerCase()} :thumbsup:`);
       res.send(`${recordStatus["Description"]}`);
     } else {
-      res.send(`:skull_and_crossbones: Status: ${recordStatus["Status"].toUpperCase()} - ${recordStatus["Description"]}`);
+      res.send(`:x: Status: ${recordStatus["Status"].toUpperCase()} - ${recordStatus["Description"]}`);
     }
     res.send(`Full info om bedriften finner du hos Arbeidstilsynets sider: https://arbeidstilsynet.no/renholdsvirksomhet/${orgnr}`);
   } else {
-    res.send("Fant ingen organisasjon hos arbeidstilsynet for organisasjonsnummer: " + orgnr);
+    res.send(":man-shrugging: Fant ingen organisasjon hos arbeidstilsynet for organisasjonsnummer: " + orgnr);
     res.send("Kan du ha skrevet feil? :thinking_face:");
     return;
   }
@@ -33,7 +33,7 @@ function svarFraArbeidstilsynet(res, orgnr, err, data) {
 
 function svarFraSentralGodkjenning(res, orgnr, err, data) {
   if (err && err.statusCode === 404) {
-    res.send(`Bedrift med orgnr ${orgnr} finnes ikke i det sentrale godkjenningsregisteret.`);
+    res.send(`:man-shrugging: Bedrift med orgnr ${orgnr} finnes ikke i det sentrale godkjenningsregisteret.`);
     return;
   } else if (err) {
     res.send(`Det skjedde en feil ved henting av bedriftsdata fra sentral godkjenningsregisteret for bedrift med orgnr: ${orgnr}.`);
@@ -45,7 +45,20 @@ function svarFraSentralGodkjenning(res, orgnr, err, data) {
   const { name = "Navn ikke tilgjengelig", www = "", email = "", phone = "" } = bedrift.enterprise;
   if (erGodkjent) {
     res.send(`:bird: Jeg har nå sjekket ${verdiEllerDefault(name, "Navn ikke tilgjengelig")} | Tlf: ${verdiEllerDefault(phone, "")} | Email: ${verdiEllerDefault(email, "")} | Nett: ${verdiEllerDefault(www, "")}`);
-    res.send(`:thumbsup: ${name} med orgnr: ${orgnr} er godkjent i det sentrale godkjenningsregisteret. Lenke til godkjenningsbevis: ${approval_certificate}.`);
+    res.send(`:white_check_mark: ${name} med orgnr: ${orgnr} er godkjent i det sentrale godkjenningsregisteret. Lenke til godkjenningsbevis: ${approval_certificate}. :thumbsup:`);
+  }
+}
+
+function svarFraEnhetsregisteret(res, orgnr, err, data) {
+  if (err) {
+    res.send("Det var problemer med å hente data fra Enhetsregisteret");
+    return;
+  }
+  const { registrertIMvaregisteret, navn, organisasjonsform: { beskrivelse } } = data._embedded.enheter[0];
+  if (registrertIMvaregisteret) {
+    res.send(`:white_check_mark: ${navn} (${beskrivelse}) er registrert i MVA-registeret :thumbsup:`);
+  } else {
+    res.send(`:x: ${navn} (${beskrivelse}) er ikke registrert i MVA-registeret :thumbsdown:`);
   }
 }
 
@@ -65,15 +78,21 @@ export const arbeidstilsynet = (bot) => {
       return;
     }
     if (orgnr) {
-      res.send(sjekkerOrganisasjon("Arbeidstilsynet"));
-      service.sjekkBedrift(orgnr, (err, data) => {
-        svarFraArbeidstilsynet(res, orgnr, err, data);
+      res.send(sjekkerOrganisasjon("Enhetsregisteret"));
+      service.sjekkEnhetsregisteret(orgnr, (err, data) => {
+        svarFraEnhetsregisteret(res, orgnr, err, data);
         res.send("\n----------------------------------\n")
-        res.send(sjekkerOrganisasjon("Sentral godkjenning"));
-        service.sjekkSentralGodkjenning(orgnr, (sentralError, sentralData) => {
-          svarFraSentralGodkjenning(res, orgnr, sentralError, sentralData);
-        })
+        res.send(sjekkerOrganisasjon("Arbeidstilsynet"));
+        service.sjekkBedrift(orgnr, (err, data) => {
+          svarFraArbeidstilsynet(res, orgnr, err, data);
+          res.send("\n----------------------------------\n")
+          res.send(sjekkerOrganisasjon("Sentral godkjenning"));
+          service.sjekkSentralGodkjenning(orgnr, (sentralError, sentralData) => {
+            svarFraSentralGodkjenning(res, orgnr, sentralError, sentralData);
+          })
+        });
       });
+
     }
   });
 };

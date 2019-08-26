@@ -38,15 +38,15 @@ function svarFraArbeidstilsynet(res, orgnr, err, data) {
     var erGodkjent = recordStatus["Valid"];
 
     if (erGodkjent) {
-      res.send(":thumbsup: ".concat(org["Name"], " er ").concat(recordStatus["Status"].toLowerCase()));
+      res.send(":white_check_mark: ".concat(org["Name"], " er ").concat(recordStatus["Status"].toLowerCase(), " :thumbsup:"));
       res.send("".concat(recordStatus["Description"]));
     } else {
-      res.send(":skull_and_crossbones: Status: ".concat(recordStatus["Status"].toUpperCase(), " - ").concat(recordStatus["Description"]));
+      res.send(":x: Status: ".concat(recordStatus["Status"].toUpperCase(), " - ").concat(recordStatus["Description"]));
     }
 
     res.send("Full info om bedriften finner du hos Arbeidstilsynets sider: https://arbeidstilsynet.no/renholdsvirksomhet/".concat(orgnr));
   } else {
-    res.send("Fant ingen organisasjon hos arbeidstilsynet for organisasjonsnummer: " + orgnr);
+    res.send(":man-shrugging: Fant ingen organisasjon hos arbeidstilsynet for organisasjonsnummer: " + orgnr);
     res.send("Kan du ha skrevet feil? :thinking_face:");
     return;
   }
@@ -54,7 +54,7 @@ function svarFraArbeidstilsynet(res, orgnr, err, data) {
 
 function svarFraSentralGodkjenning(res, orgnr, err, data) {
   if (err && err.statusCode === 404) {
-    res.send("Bedrift med orgnr ".concat(orgnr, " finnes ikke i det sentrale godkjenningsregisteret."));
+    res.send(":man-shrugging: Bedrift med orgnr ".concat(orgnr, " finnes ikke i det sentrale godkjenningsregisteret."));
     return;
   } else if (err) {
     res.send("Det skjedde en feil ved henting av bedriftsdata fra sentral godkjenningsregisteret for bedrift med orgnr: ".concat(orgnr, "."));
@@ -77,7 +77,25 @@ function svarFraSentralGodkjenning(res, orgnr, err, data) {
 
   if (erGodkjent) {
     res.send(":bird: Jeg har n\xE5 sjekket ".concat(verdiEllerDefault(name, "Navn ikke tilgjengelig"), " | Tlf: ").concat(verdiEllerDefault(phone, ""), " | Email: ").concat(verdiEllerDefault(email, ""), " | Nett: ").concat(verdiEllerDefault(www, "")));
-    res.send(":thumbsup: ".concat(name, " med orgnr: ").concat(orgnr, " er godkjent i det sentrale godkjenningsregisteret. Lenke til godkjenningsbevis: ").concat(approval_certificate, "."));
+    res.send(":white_check_mark: ".concat(name, " med orgnr: ").concat(orgnr, " er godkjent i det sentrale godkjenningsregisteret. Lenke til godkjenningsbevis: ").concat(approval_certificate, ". :thumbsup:"));
+  }
+}
+
+function svarFraEnhetsregisteret(res, orgnr, err, data) {
+  if (err) {
+    res.send("Det var problemer med å hente data fra Enhetsregisteret");
+    return;
+  }
+
+  var _data$_embedded$enhet = data._embedded.enheter[0],
+      registrertIMvaregisteret = _data$_embedded$enhet.registrertIMvaregisteret,
+      navn = _data$_embedded$enhet.navn,
+      beskrivelse = _data$_embedded$enhet.organisasjonsform.beskrivelse;
+
+  if (registrertIMvaregisteret) {
+    res.send(":white_check_mark: ".concat(navn, " (").concat(beskrivelse, ") er registrert i MVA-registeret :thumbsup:"));
+  } else {
+    res.send(":x: ".concat(navn, " (").concat(beskrivelse, ") er ikke registrert i MVA-registeret :thumbsdown:"));
   }
 }
 
@@ -99,15 +117,21 @@ var arbeidstilsynet = function arbeidstilsynet(bot) {
     }
 
     if (orgnr) {
-      res.send(sjekkerOrganisasjon("Arbeidstilsynet"));
+      res.send(sjekkerOrganisasjon("Enhetsregisteret"));
 
-      _arbeidstilsynetService["default"].sjekkBedrift(orgnr, function (err, data) {
-        svarFraArbeidstilsynet(res, orgnr, err, data);
+      _arbeidstilsynetService["default"].sjekkEnhetsregisteret(orgnr, function (err, data) {
+        svarFraEnhetsregisteret(res, orgnr, err, data);
         res.send("\n----------------------------------\n");
-        res.send(sjekkerOrganisasjon("Sentral godkjenning"));
+        res.send(sjekkerOrganisasjon("Arbeidstilsynet"));
 
-        _arbeidstilsynetService["default"].sjekkSentralGodkjenning(orgnr, function (sentralError, sentralData) {
-          svarFraSentralGodkjenning(res, orgnr, sentralError, sentralData);
+        _arbeidstilsynetService["default"].sjekkBedrift(orgnr, function (err, data) {
+          svarFraArbeidstilsynet(res, orgnr, err, data);
+          res.send("\n----------------------------------\n");
+          res.send(sjekkerOrganisasjon("Sentral godkjenning"));
+
+          _arbeidstilsynetService["default"].sjekkSentralGodkjenning(orgnr, function (sentralError, sentralData) {
+            svarFraSentralGodkjenning(res, orgnr, sentralError, sentralData);
+          });
         });
       });
     }

@@ -178,7 +178,6 @@ var kolonialService = {
       body: items
     });
 
-    console.log(JSON.stringify(payload, null, 2));
     (0, _requestPromise["default"])(payload).then(function (data) {
       console.log("Varer lagt til i handlekurven", data);
       cb(null, data);

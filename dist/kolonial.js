@@ -151,7 +151,7 @@ var kolonial = function kolonial(bot) {
     });
   });
   bot.respond(/(logout|logg ut)/i, function (res) {
-    res.send('Logger ut av Sindres bruker...');
+    res.send('Logger ut...');
 
     _kolonialService["default"].logout(function (err, data) {
       if (err) {
@@ -159,7 +159,7 @@ var kolonial = function kolonial(bot) {
         return;
       }
 
-      res.send('Du er nå logget ut av Sindres bruker');
+      res.send('Du er nå logget ut.');
     });
   });
 };

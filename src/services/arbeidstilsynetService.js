@@ -1,5 +1,5 @@
 import rp from 'request-promise';
-import { ARBEIDSTILSYNET_HOST_AND_PORT, SENTRAL_GODKJENNING_HOST_AND_PORT } from '../constants/constants';
+import { ARBEIDSTILSYNET_HOST_AND_PORT, SENTRAL_GODKJENNING_HOST_AND_PORT, ENHETSREGISTERET_HOST_AND_PORT } from '../constants/constants';
 
 const arbeidstilsynetService = {
     sjekkBedrift: (orgnr, cb) => {
@@ -19,6 +19,15 @@ const arbeidstilsynetService = {
         rp.get(`${SENTRAL_GODKJENNING_HOST_AND_PORT}/${orgnr}`)
             .then(data => {
                 cb(null, JSON.parse(data));
+            })
+            .catch(error => {
+                cb(error, []);
+            })
+    },
+    sjekkEnhetsregisteret: (orgnr, cb) => {
+        rp.get(`${ENHETSREGISTERET_HOST_AND_PORT}?organisasjonsnummer=${orgnr}`)
+            .then(data => {
+                cb(null, JSON.parse(data))
             })
             .catch(error => {
                 cb(error, []);

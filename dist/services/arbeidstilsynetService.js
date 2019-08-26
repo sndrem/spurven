@@ -31,6 +31,13 @@ var arbeidstilsynetService = {
     })["catch"](function (error) {
       cb(error, []);
     });
+  },
+  sjekkEnhetsregisteret: function sjekkEnhetsregisteret(orgnr, cb) {
+    _requestPromise["default"].get("".concat(_constants.ENHETSREGISTERET_HOST_AND_PORT, "?organisasjonsnummer=").concat(orgnr)).then(function (data) {
+      cb(null, JSON.parse(data));
+    })["catch"](function (error) {
+      cb(error, []);
+    });
   }
 };
 var _default = arbeidstilsynetService;
